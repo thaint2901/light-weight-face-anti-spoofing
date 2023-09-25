@@ -113,6 +113,14 @@ class Trainer:
             loop.set_postfix(loss=loss.item(), avr_loss = losses.avg,
                              acc=acc, avr_acc=accuracy.avg,
                              lr=self.optimizer.param_groups[0]['lr'])
+
+        if (epoch%10 == 0 or epoch >= (self.config.epochs.max_epoch - 10)) and (accuracy.avg > self.current_accuracy):
+            print(f"New checkpoint: {self.path_to_checkpoint}")
+            checkpoint = {'state_dict': self.model.state_dict(),
+                                'optimizer': self.optimizer.state_dict(), 'epoch': epoch}
+            save_checkpoint(checkpoint, f'{self.path_to_checkpoint}')
+            self.current_accuracy = accuracy.avg
+
         return losses.avg, accuracy.avg
 
     def validate(self):
