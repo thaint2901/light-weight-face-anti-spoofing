@@ -25,21 +25,21 @@ from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 
 from eval_protocol import evaluate
-from utils import (AverageMeter, cutmix, load_checkpoint,
+from spoof_utils import (AverageMeter, cutmix, load_checkpoint,
                    mixup_target, precision, save_checkpoint)
 
 
 class Trainer:
     def __init__(self, model, criterion, optimizer, device,
-                 config, train_loader, val_loader, test_loader):
+                 config, train_loader):
         self.model = model
         self.criterion = criterion
         self.optimizer = optimizer
         self.device = device
         self.config = config
         self.train_loader = train_loader
-        self.val_loader = val_loader
-        self.test_loader = test_loader
+        # self.val_loader = val_loader
+        # self.test_loader = test_loader
         self.train_step, self.val_step = 0, 0
         self.best_accuracy, self.current_accuracy, self.current_auc = 0, 0, 0
         self.current_eer, self.best_acer = float('inf'), float('inf')
@@ -263,21 +263,22 @@ class Trainer:
         else:
             # spoof loss, take derivitive
             spoof_target = F.one_hot(target[:,0], num_classes=2)
-            spoof_type_target = F.one_hot(target[:,1], num_classes=11)
-            lightning_target = F.one_hot(target[:,2], num_classes=5)
+            spoof_type_target = F.one_hot(target[:,1], num_classes=7)
+            # lightning_target = F.one_hot(target[:,2], num_classes=5)
 
             # compute losses
             spoof_loss = softmax(output[0], spoof_target)
             spoof_type_loss = cross_entropy(output[1], spoof_type_target)
-            lightning_loss = cross_entropy(output[2], lightning_target)
+            # lightning_loss = cross_entropy(output[2], lightning_target)
 
             # filter output for real images and compute third loss
-            mask = target[:,0] == 0
-            filtered_output = output[3][mask]
-            filtered_target = target[:,3:][mask].type(torch.float32)
-            real_atr_loss = bce(filtered_output, filtered_target)
+            # mask = target[:,0] == 0
+            # filtered_output = output[3][mask]
+            # filtered_target = target[:,3:][mask].type(torch.float32)
+            # real_atr_loss = bce(filtered_output, filtered_target)
         # combine losses
-        loss = C*spoof_loss + Cs*spoof_type_loss + Ci*lightning_loss + Cf*real_atr_loss
+        # loss = C*spoof_loss + Cs*spoof_type_loss + Ci*lightning_loss + Cf*real_atr_loss
+        loss = C*spoof_loss + Cs*spoof_type_loss
         return loss
 
     @staticmethod

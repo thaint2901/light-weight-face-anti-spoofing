@@ -24,15 +24,15 @@ import torch
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from datasets import CelebASpoofDataset
-from utils import Transform
+from datasets import CelebASpoofDataset, MX_WFAS
+from spoof_utils import Transform
 
 
 def main():
     parser = argparse.ArgumentParser(description='mean and std computing')
     parser.add_argument('--root', type=str, default=None, required=True,
                         help='path to root folder of the CelebA_Spoof')
-    parser.add_argument('--img_size', type=tuple, default=(128,128), required=False,
+    parser.add_argument('--img_size', type=tuple, default=(224,224), required=False,
                         help='height and width of the image to resize')
     args = parser.parse_args()
     # transform image
@@ -41,9 +41,9 @@ def main():
                                 A.Normalize(mean=[0, 0, 0], std=[1, 1, 1])
                                 ])
     root_folder = args.root
-    train_dataset = CelebASpoofDataset(root_folder, test_mode=False,
-                                       transform=Transform(transforms),
-                                       multi_learning=False)
+    train_dataset = MX_WFAS(path_imgrec="/mnt/nvme0n1p2/datasets/untispoofing/CVPR2023-Anti_Spoof-Challenge-Release-Data-20230209/train_4.0.rec",
+        path_imgidx="/mnt/nvme0n1p2/datasets/untispoofing/CVPR2023-Anti_Spoof-Challenge-Release-Data-20230209/train_4.0.idx",
+        transform=Transform(transforms), multi_learning=False)
     dataloader = DataLoader(train_dataset, batch_size=100, shuffle=True)
     mean, std = compute_mean_std(dataloader)
     print(f'mean:{mean}, std:{std}')

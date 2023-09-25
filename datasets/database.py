@@ -21,12 +21,13 @@ from functools import partial
 from .celeba_spoof import CelebASpoofDataset
 from .casia_surf import CasiaSurfDataset
 from .lcc_fasd import LccFasdDataset
+from .mx_dataset import MX_WFAS
 
 def do_nothing(**args):
     pass
 
 # import your reader and replace do_nothing with it
-external_reader=do_nothing
+external_reader=MX_WFAS
 
 def get_datasets(config):
 

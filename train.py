@@ -24,7 +24,7 @@ import torch
 import torch.nn as nn
 
 from trainer import Trainer
-from utils import (Transform, build_criterion, build_model, make_dataset,
+from spoof_utils import (Transform, build_criterion, build_model, make_dataset,
                    make_loader, make_weights, read_py_config)
 
 
@@ -46,11 +46,11 @@ def main():
     device = args.device + f':{args.GPU}' if args.device == 'cuda' else 'cpu'
     if config.data_parallel.use_parallel:
         device = f'cuda:{config.data_parallel.parallel_params.output_device}'
-    if config.multi_task_learning and config.dataset != 'celeba_spoof':
-        raise NotImplementedError(
-            'Note, that multi task learning is avaliable for celeba_spoof only. '
-            'Please, switch it off in config file'
-            )
+    # if config.multi_task_learning and config.dataset != 'celeba_spoof':
+    #     raise NotImplementedError(
+    #         'Note, that multi task learning is avaliable for celeba_spoof only. '
+    #         'Please, switch it off in config file'
+    #         )
     # launch training, validation, testing
     train(config, device, args.save_checkpoint)
 
@@ -98,9 +98,8 @@ def train(config, device='cuda:0', save_chkpt=True):
     train_transform = Transform(train_spoof=train_transform_spoof,
                                 train_real=train_transform_real, val=None)
     val_transform = Transform(train_spoof=None, train_real=None, val=val_transform)
-    train_dataset, val_dataset, test_dataset = make_dataset(config, train_transform, val_transform)
-    train_loader, val_loader, test_loader = make_loader(train_dataset, val_dataset,
-                                                        test_dataset, config, sampler=sampler)
+    train_dataset = make_dataset(config, train_transform, val_transform)
+    train_loader = make_loader(train_dataset, config, sampler=sampler)
 
     # build model and put it to cuda and if it needed then wrap model to data parallel
     model = build_model(config, device=device, strict=False, mode='train')
@@ -119,7 +118,7 @@ def train(config, device='cuda:0', save_chkpt=True):
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, **config.scheduler)
 
     # create Trainer object and get experiment information
-    trainer = Trainer(model, criterion, optimizer, device, config, train_loader, val_loader, test_loader)
+    trainer = Trainer(model, criterion, optimizer, device, config, train_loader)
     trainer.get_exp_info()
 
     # learning epochs
@@ -131,11 +130,11 @@ def train(config, device='cuda:0', save_chkpt=True):
         train_loss, train_accuracy = trainer.train(epoch)
         print(f'epoch: {epoch}  train loss: {train_loss}   train accuracy: {train_accuracy}')
 
-        # validate your model
-        accuracy = trainer.validate()
+        # # validate your model
+        # accuracy = trainer.validate()
 
         # eval metrics such as AUC, APCER, BPCER, ACER on val and test dataset according to rule
-        trainer.eval(epoch, accuracy, save_chkpt=save_chkpt)
+        # trainer.eval(epoch, accuracy, save_chkpt=save_chkpt)
         # for testing purposes
         if config.test_steps:
             exit()

@@ -32,7 +32,7 @@ from sklearn.metrics import auc, roc_curve
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from utils import (Transform, build_model, load_checkpoint, make_dataset,
+from spoof_utils import (Transform, build_model, load_checkpoint, make_dataset,
                    read_py_config)
 
 

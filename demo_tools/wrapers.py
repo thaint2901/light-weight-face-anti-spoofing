@@ -29,7 +29,7 @@ from .ie_tools import load_ie_model
 current_dir = osp.dirname(osp.abspath(inspect.getfile(inspect.currentframe())))
 parent_dir = osp.dirname(current_dir)
 sys.path.insert(0, parent_dir)
-import utils
+import spoof_utils
 
 class FaceDetector:
     """Wrapper class for face detector"""
@@ -88,7 +88,8 @@ class TorchCNN:
         self.model = model
         if config.data_parallel.use_parallel:
             self.model = nn.DataParallel(self.model, **config.data_parallel.parallel_params)
-        utils.load_checkpoint(checkpoint_path, self.model, map_location=device, strict=True)
+        spoof_utils.load_checkpoint(checkpoint_path, self.model, map_location=device, strict=True)
+        self.device = device
         self.config = config
 
     def preprocessing(self, images):
@@ -112,6 +113,8 @@ class TorchCNN:
         model1 = (self.model.module
                   if self.config.data_parallel.use_parallel
                   else self.model)
+        model1 = model1.to(self.device)
+        batch = batch.to(self.device)
         with torch.no_grad():
             output = model1.forward_to_onnx(batch)
-            return output.detach().numpy()
+            return output.cpu().detach().numpy()

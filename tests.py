@@ -19,7 +19,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.'''
 import unittest
 import torch
 
-from utils import read_py_config, build_model, check_file_exist
+from spoof_utils import read_py_config, build_model, check_file_exist
 
 
 class ExportError(Exception):

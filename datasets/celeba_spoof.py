@@ -35,7 +35,7 @@ class CelebASpoofDataset(Dataset):
 
         with open(list_path, 'r') as f:
             self.data = json.load(f)
-        # transform is supposed to be instance of the Transform object from utils.py pending entry label
+        # transform is supposed to be instance of the Transform object from spoof_utils.py pending entry label
         self.transform = transform
         self.multi_learning = multi_learning
 

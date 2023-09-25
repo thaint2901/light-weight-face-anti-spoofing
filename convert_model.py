@@ -21,7 +21,7 @@ import os
 
 import torch
 
-from utils import build_model, load_checkpoint, read_py_config
+from spoof_utils import build_model, load_checkpoint, read_py_config
 
 def main():
     # parse arguments
