@@ -48,12 +48,13 @@ def clamp(x, min_x, max_x):
 
 
 class MX_WFAS(Dataset):
-    def __init__(self, path_imgrec, path_imgidx, transform, multi_learning=False):
+    def __init__(self, path_imgrec, path_imgidx, transform, scale=1.0, multi_learning=False):
         super(MX_WFAS, self).__init__()
         self.transform = transform
         self.imgrec = mx.recordio.MXIndexedRecordIO(path_imgidx, path_imgrec, 'r')
         self.imgidx = np.array(list(self.imgrec.keys))
         self.multi_learning = multi_learning
+        self.scale = scale
 
     def __getitem__(self, index):
         idx = self.imgidx[index]
@@ -69,8 +70,8 @@ class MX_WFAS(Dataset):
             labels = label
         
         # crop face bbox
-        scale = np.random.uniform(1.0, 1.2)
-        bbox = _get_new_box(sample.shape[0], sample.shape[1], bbox, scale=scale)
+        # scale = np.random.uniform(1.0, 1.2)
+        bbox = _get_new_box(sample.shape[0], sample.shape[1], bbox, scale=self.scale)
         sample = sample[bbox[1]:bbox[3], bbox[0]:bbox[2]].copy()
         
         if self.transform is not None:

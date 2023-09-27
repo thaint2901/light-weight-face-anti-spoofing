@@ -121,7 +121,8 @@ class MobileNetV3(MobileNet):
                         linear=True),
                 nn.BatchNorm1d(self.embeding_dim),
                 h_swish(),
-                nn.Linear(self.embeding_dim, 7),
+                # nn.Linear(self.embeding_dim, 11),
+                nn.Linear(self.embeding_dim, 10),
             )
             self.real_atr = nn.Sequential(
                 Dropout(p=self.prob_dropout_linear,

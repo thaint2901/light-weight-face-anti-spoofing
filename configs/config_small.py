@@ -15,7 +15,8 @@ datasets = dict(LCCFASD_root='./LCC_FASDcropped',
 external = dict(train_params={
     "path_imgrec": "/mnt/nvme0n1p2/datasets/untispoofing/CVPR2023-Anti_Spoof-Challenge-Release-Data-20230209/train_4.0.rec",
     "path_imgidx": "/mnt/nvme0n1p2/datasets/untispoofing/CVPR2023-Anti_Spoof-Challenge-Release-Data-20230209/train_4.0.idx",
-    "multi_learning": True
+    "multi_learning": True,
+    "scale": 1.5
 },
                 val_params=dict(), test_params=dict())
 

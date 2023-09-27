@@ -252,7 +252,7 @@ class Trainer:
             return output
 
     def multi_task_criterion(self, output: tuple, target: torch.tensor,
-                             C: float=1., Cs: float=0.1, Ci: float=0.1, Cf: float=1.):
+                             C: float=1., Cs: float=0.35, Ci: float=0.1, Cf: float=1.):
         ''' output -> tuple of given losses
         target -> torch tensor of a shape [batch*num_tasks]
         return loss function '''
@@ -271,7 +271,8 @@ class Trainer:
         else:
             # spoof loss, take derivitive
             spoof_target = F.one_hot(target[:,0], num_classes=2)
-            spoof_type_target = F.one_hot(target[:,1], num_classes=7)
+            spoof_type_target = F.one_hot(target[:,1], num_classes=10)
+            # spoof_type_target = F.one_hot(target[:,1], num_classes=11)
             # lightning_target = F.one_hot(target[:,2], num_classes=5)
 
             # compute losses
