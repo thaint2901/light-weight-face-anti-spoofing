@@ -13,15 +13,15 @@ datasets = dict(LCCFASD_root='./LCC_FASDcropped',
                 Casia_root='./CASIA')
 
 external = dict(train_params={
-    "path_imgrec": "/mnt/nvme0n1p2/datasets/untispoofing/CVPR2023-Anti_Spoof-Challenge-Release-Data-20230209/train_4.0.rec",
-    "path_imgidx": "/mnt/nvme0n1p2/datasets/untispoofing/CVPR2023-Anti_Spoof-Challenge-Release-Data-20230209/train_4.0.idx",
+    "path_imgrec": "/mnt/sdc1/datasets/untispoofing/CVPR2023-Anti_Spoof-Challenge-Release-Data-20230209/train_4.0.rec",
+    "path_imgidx": "/mnt/sdc1/datasets/untispoofing/CVPR2023-Anti_Spoof-Challenge-Release-Data-20230209/train_4.0.idx",
     "multi_learning": True,
     "scale": 1.5
 },
                 val_params=dict(), test_params=dict())
 
-img_norm_cfg = dict(mean=[0.5295, 0.4319, 0.3978],
-                    std=[0.2578, 0.2299, 0.2246])
+img_norm_cfg = dict(mean=[0.5, 0.5, 0.5],
+                    std=[0.5, 0.5, 0.5])
 
 optimizer = dict(lr=0.005, momentum=0.9, weight_decay=5e-4)
 

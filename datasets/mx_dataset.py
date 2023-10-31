@@ -2,6 +2,7 @@ import mxnet as mx
 import numpy as np
 import numbers
 import torch
+import cv2
 from torch.utils.data import Dataset
 from torchvision import transforms
 
@@ -71,8 +72,9 @@ class MX_WFAS(Dataset):
         
         # crop face bbox
         # scale = np.random.uniform(1.0, 1.2)
-        bbox = _get_new_box(sample.shape[0], sample.shape[1], bbox, scale=self.scale)
+        bbox = _get_new_box(sample.shape[1], sample.shape[0], bbox, scale=self.scale)
         sample = sample[bbox[1]:bbox[3], bbox[0]:bbox[2]].copy()
+        # cv2.imwrite("./tmp.jpg", sample)
         
         if self.transform is not None:
             sample = self.transform(label=label, img=sample)['image']
@@ -82,3 +84,18 @@ class MX_WFAS(Dataset):
 
     def __len__(self):
         return len(self.imgidx)
+
+
+if __name__ == "__main__":
+    train_set = MX_WFAS(
+        path_imgrec="/mnt/sdc1/datasets/untispoofing/CVPR2023-Anti_Spoof-Challenge-Release-Data-20230209/train_4.0.rec",
+        path_imgidx="/mnt/sdc1/datasets/untispoofing/CVPR2023-Anti_Spoof-Challenge-Release-Data-20230209/train_4.0.idx",
+        scale=1.5,
+        transform=None
+    )
+
+    while True:
+        idx = np.random.randint(0, len(train_set))
+        train_set[idx]
+    print(train_set[0])
+    print("Done")
